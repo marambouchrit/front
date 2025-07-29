@@ -1,0 +1,21 @@
+import React, { createContext,useState ,useContext} from 'react'
+
+type User={
+  email:string;
+  password:string;
+}
+const AuthContext =createContext (null) 
+export const AuthProvider=()=>{
+const [user,setUser]=useState(null)
+
+const login = (user:User)=>{
+  setUser(user)
+}
+const logout=()=>{
+  setUser(null)
+}
+return( <AuthContext.Provider value={{user ,login,logout}}>{children}</AuthContext.Provider>)
+}
+export const useAuth=()=>{
+  return useContext(AuthContext)
+}
