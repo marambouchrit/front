@@ -25,15 +25,10 @@ const AdminDashboardPage = () => {
           <DashboardCard title=" Demandes " content={"12"} />
         </Grid>
       </Grid>
-      <Grid container spacing={2}>
-        <Grid size={{ xs: 6 }}>
-          <Paper sx={{ height: "215px" }}>TABLE</Paper>
-        </Grid>
-        <Grid size={{ xs: 6 }}>
-          <UsersTable />
-        </Grid>
-      </Grid>
-      <EmployeRequestTable/>
+
+      <UsersTable />
+
+      <EmployeRequestTable />
     </>
   );
 };

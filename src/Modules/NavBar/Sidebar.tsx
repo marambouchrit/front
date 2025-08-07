@@ -11,6 +11,8 @@ import GroupIcon from '@mui/icons-material/Group';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { styled, useTheme } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import GestionUser from '../AdminDashboard/components/GestionUser';
+
 export const CircularButton = styled(Box)(({ theme }) => ({
   background: theme.palette.primary.contrastText,
   display: 'flex',
@@ -20,56 +22,72 @@ export const CircularButton = styled(Box)(({ theme }) => ({
   width: '30px',
   height: '30px',
 }));
- const routes=[
-            {
-              path:'/user-dashboard',
-              title:"UserDashboard",
-              icon: <GroupIcon />,
-            }
-            ,
-             {
-              path:'/mon-equipe',
-              title:"MonEquipe",
-              icon: <GroupIcon />,
-            }
-             ,
-             {
-              path:'/admin-dashboard',
-              title:"AdminDashboard",
-              icon: <GroupIcon />,
-            }
-            ,
-             {
-              path:'/login',
-              title:"Se Deconnecté",
-              icon: <GroupIcon />,
-            }
-            
-          ]
-export default function TemporaryDrawer() {
 
+const routes = [
+  {
+    path: '/user-dashboard',
+    title: "UserDashboard",
+    icon: <GroupIcon />,
+  },
+  {
+    path: '/mon-equipe',
+    title: "MonEquipe",
+    icon: <GroupIcon />,
+  },
+  {
+    path: '/admin-dashboard',
+    title: "AdminDashboard",
+    icon: <GroupIcon />,
+  },
+  {
+    path: '/admin-dashboard',
+    title: "Gestion utilisateur",
+    icon: <GroupIcon />,
+  },
+  {
+    path: '/login',
+    title: "Se Deconnecté",
+    icon: <GroupIcon />,
+  },
+];
+
+export default function TemporaryDrawer() {
   const [open, setOpen] = React.useState(false);
+  const [popupOpen, setPopupOpen] = React.useState(false); 
   const theme = useTheme();
   const navigate = useNavigate();
-  const toggleDrawer = (newOpen: boolean) => () => {
+
+  const toggleDrawer = (newOpen:boolean) => () => {
     setOpen(newOpen);
+  };
+
+  const handlePopupOpen = () => {
+    setPopupOpen(true);
+  };
+
+  const handlePopupClose = () => {
+    setPopupOpen(false);
   };
 
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
       <List>
-        {routes.map((route) => {
-          return (
-            <ListItem key={route.title} disablePadding>
-              <ListItemButton
-              onClick={() => navigate(route.path)}
-              >
-                <ListItemIcon>{route.icon}</ListItemIcon>
-                <ListItemText primary={route.title} />
-              </ListItemButton>
-            </ListItem>
-          );
-        })}
+        {routes.map((route) => (
+          <ListItem key={route.title} disablePadding>
+            <ListItemButton
+              onClick={() => {
+                if (route.title === "Gestion utilisateur") {
+                  handlePopupOpen(); 
+                } else {
+                  navigate(route.path);
+                }
+              }}
+            >
+              <ListItemIcon>{route.icon}</ListItemIcon>
+              <ListItemText primary={route.title} />
+            </ListItemButton>
+          </ListItem>
+        ))}
       </List>
     </Box>
   );
@@ -80,6 +98,7 @@ export default function TemporaryDrawer() {
       <Drawer open={open} onClose={toggleDrawer(false)}>
         {DrawerList}
       </Drawer>
+      <GestionUser open={popupOpen} handleClose={handlePopupClose} /> 
     </div>
   );
 }

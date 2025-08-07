@@ -14,7 +14,6 @@ import { Navigate } from "react-router-dom";
 //import AdminDashboardPage from './Modules/AdminDashboard/pages/AdminDashboardPage';
 //import NavbarSupervisor from './Modules/NavBar/NavBarSupervisor';
 
-
 const AppBody = styled(Box)(({ theme }) => ({
   background: theme.palette.grey[100],
 }));
@@ -28,11 +27,13 @@ function App() {
     <>
       <BrowserRouter>
         <AppBody>
+          <Routes>
+            <Route path="/login" element={<LoginFormPage />} />
+          </Routes>
           <Navbar />
           <MaxWidthBox>
             <CssBaseline />
             <Routes>
-              <Route path="/login" element={<LoginFormPage />} />
               <Route path="/user-dashboard" element={<UserDashboardPage />} />
               <Route path="/mon-equipe" element={<SuperviseurEquipe />} />
               <Route path="/admin-dashboard" element={<AdminDashboardPage />} />

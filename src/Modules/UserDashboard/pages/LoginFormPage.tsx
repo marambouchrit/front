@@ -27,17 +27,28 @@ const LoginFormPage = () => {
    
     try {
   const response = await axios.post(
-    "http://localhost:8000/api/login",
-   { username: email, password },
-      {
-        headers: { 'Content-Type': 'application/json' },
-        // withCredentials: true,
-      }
-  );
-  console.log(response);
+  "http://localhost:8000/api/login",
+  {
+    username: email,
+    password,
+  },
+  {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  }
+);
   const { token } = response.data;
-  localStorage.setItem("token", token);
-  navigate("/user-dashboard");
+localStorage.setItem("token", token);
+
+// Décoder le token et extraire user_id
+const base64Url = token.split('.')[1];
+const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+const payload = JSON.parse(window.atob(base64));
+localStorage.setItem("userId", payload.user_id);
+
+navigate("/user-dashboard");
+
 } catch (err: any) {
   setError(err.response?.data?.error || "Login failed");
 }

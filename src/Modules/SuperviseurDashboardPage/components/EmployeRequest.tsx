@@ -10,10 +10,25 @@ import {
   TableBody,
   Typography,
   Box,
- 
 } from "@mui/material";
 import AcceptButton from "./AcceptButton";
 import RejectButton from "./RejectButton";
+
+// const EmployeRequestTable = () => {
+//   const [tableData, setTableData] = useState([]);
+
+//   const fetchDemandes = async () => {
+//     try {
+//       const response = await axiosInstance.get("/conges/en-attente"); // <-- adapter selon votre backend
+//       setTableData(response.data);
+//     } catch (error) {
+//       console.error("Erreur lors du chargement des demandes :", error);
+//     }
+//   };
+
+//   useEffect(() => {
+//     fetchDemandes();
+//   }, []);
 
 const EmployeRequestTable = () => {
   const tableData = [
@@ -71,14 +86,18 @@ const EmployeRequestTable = () => {
   return (
     <>
       {" "}
-      <Typography variant="h6" color="primary" sx={{ marginTop: 5, marginBottom: 2 }}>
+      <Typography
+        variant="h6"
+        color="primary"
+        sx={{ marginTop: 5, marginBottom: 2 }}
+      >
         Les demandes en attentes
       </Typography>
       <TableContainer component={Paper} sx={{ maxHeight: "500px" }}>
         <Table aria-label="simple table" stickyHeader>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ paddingLeft: 2}}>Date début</TableCell>
+              <TableCell sx={{ paddingLeft: 2 }}>Date début</TableCell>
               <TableCell>Date fin</TableCell>
               <TableCell>Type</TableCell>
               <TableCell>Statut</TableCell>
@@ -97,10 +116,18 @@ const EmployeRequestTable = () => {
                 <TableCell>{row.statut}</TableCell>
                 <TableCell>
                   <Box sx={{ display: "flex", gap: " 2px" }}>
-                    <AcceptButton/>
-                    <RejectButton/>
-                    
-                      
+                    {/* <AcceptButton/>
+                    <RejectButton/> */}
+                    <AcceptButton
+                      demandeId={row.id}
+                      onSuccess={() => console.log("refresh")}
+                      //onSuccess={fetchDemandes}
+                    />
+                    <RejectButton
+                      demandeId={row.id}
+                      onSuccess={() => console.log("refresh")}
+                      //onSuccess={fetchDemandes}
+                    />
                   </Box>
                 </TableCell>
               </TableRow>

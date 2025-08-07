@@ -1,7 +1,6 @@
 import React from "react";
 import { Alert, Typography } from "@mui/material";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import ErrorIcon from "@mui/icons-material/Error";
+
 
 type NotificationType = "ACCEPTED" | "REJECTED";
 export type Notification=  {

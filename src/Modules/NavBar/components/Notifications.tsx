@@ -1,30 +1,17 @@
 import React from "react";
-import {  IconButton, Stack, styled, type Theme } from "@mui/material";
+import { useState } from "react";
+import axiosInstance from "../../../AxiosInstance";
+import { IconButton, Stack, styled, type Theme } from "@mui/material";
 import Tooltip, {
   tooltipClasses,
   type TooltipProps,
 } from "@mui/material/Tooltip";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
-import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
+import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import NotificationCard from "./NotificationCard";
 import { CircularButton } from "../Sidebar";
+import { Typography } from "@mui/material";
 
-
-const notifications: Notification[] = [
-  {
-    type: "ACCEPTED",
-    message:
-      "Votre Demande de congé  de maladie du 15/07:25 au 20/07/25 a été accepté.",
-    date: "25 juil.",
-  },
-  {
-    type: "REJECTED",
-    message:
-      "Votre Demande de congé du 15/07:25 au 20/07/25 a été refusée. (Cliquez pour savoir plus)",
-    date: "19 juil.",
-  },
-  { type: "ACCEPTED", message: "This is a success Alert.", date: "18 juil." },
-];
 const NotificationPopup = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} classes={{ popper: className }} />
 ))(({ theme }: { theme: Theme }) => ({
@@ -37,17 +24,42 @@ const NotificationPopup = styled(({ className, ...props }: TooltipProps) => (
   },
 }));
 
+const getUserIdFromToken = () => {
+  const token = localStorage.getItem("token");
+  if (!token) return null;
 
+  const base64Url = token.split(".")[1];
+  const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+  const payload = JSON.parse(window.atob(base64));
+  return payload.user_id;
+};
 
 const Notifications = () => {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
 
-  const handleTooltipClose = () => {
-    setOpen(false);
+  const fetchNotifications = async () => {
+    const userId = getUserIdFromToken();
+    if (!userId) {
+      console.warn("Utilisateur non connecté");
+      return;
+    }
+
+    try {
+      const response = await axiosInstance.get(`/notifications/user/${userId}`);
+      setNotifications(response.data);
+    } catch (error) {
+      console.error("Erreur lors du chargement des notifications", error);
+    }
   };
 
   const handleTooltipOpen = () => {
     setOpen(true);
+    fetchNotifications(); // charger à chaque ouverture
+  };
+
+  const handleTooltipClose = () => {
+    setOpen(false);
   };
   return (
     <>
@@ -61,9 +73,15 @@ const Notifications = () => {
             disableTouchListener
             title={
               <Stack spacing={2} sx={{ padding: 2 }}>
-                {notifications.map((notification, index) => (
-                  <NotificationCard key={index} notification={notification} />
-                ))}
+                {notifications.length === 0 ? (
+                  <Typography variant="body2" color="text.secondary">
+                    Aucune notification
+                  </Typography>
+                ) : (
+                  notifications.map((notification, index) => (
+                    <NotificationCard key={index} notification={notification} />
+                  ))
+                )}
               </Stack>
             }
             slotProps={{
@@ -72,8 +90,8 @@ const Notifications = () => {
               },
             }}
           >
-            <CircularButton  onClick={handleTooltipOpen}>
-              <NotificationsNoneOutlinedIcon color="primary"/>
+            <CircularButton onClick={handleTooltipOpen}>
+              <NotificationsNoneOutlinedIcon color="primary" />
             </CircularButton>
           </NotificationPopup>
         </div>
